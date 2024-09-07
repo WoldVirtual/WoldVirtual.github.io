@@ -4,20 +4,11 @@ import pythreejs as p3
 from IPython.display import display
 import psutil  # Para verificar la RAM disponible
 
-# Ruta donde se almacenan los archivos comprimidos y descomprimidos
 storage_path = '/workspaces/WoldVirtual.github.io/Metaverso_Crypto/inicio/Blockchain_Principal/Almacenamiento'
 
 def compress_files(files, output_filename):
-    """
-    Comprime una lista de archivos en un archivo tar.gz.
-    
-    Args:
-        files (list): Lista de rutas de archivos a comprimir.
-        output_filename (str): Nombre del archivo tar.gz de salida.
-    """
     output_filepath = os.path.join(storage_path, output_filename)
     
-    # Verifica que los archivos existan antes de intentar comprimirlos
     for file in files:
         if not os.path.isfile(file):
             print(f"Advertencia: El archivo {file} no existe y no será incluido en la compresión.")
@@ -25,22 +16,15 @@ def compress_files(files, output_filename):
     try:
         with tarfile.open(output_filepath, 'w:gz') as tar:
             for file in files:
-                if os.path.isfile(file):  # Solo añade los archivos existentes
+                if os.path.isfile(file):
                     tar.add(file, arcname=os.path.basename(file))
         print(f'Archivos comprimidos en {output_filename}, guardado en {output_filepath}')
     except Exception as e:
         print(f"Error al comprimir archivos: {e}")
 
 def decompress_file(input_filename):
-    """
-    Descomprime un archivo tar.gz en el directorio de almacenamiento.
-
-    Args:
-        input_filename (str): Nombre del archivo tar.gz a descomprimir.
-    """
     input_filepath = os.path.join(storage_path, input_filename)
     
-    # Verifica que el archivo de entrada exista antes de intentar descomprimirlo
     if not os.path.isfile(input_filepath):
         print(f"Error: El archivo {input_filepath} no existe.")
         return
@@ -63,9 +47,8 @@ class IslaVirtual3D:
         self.crear_agua()
 
     def crear_isla(self):
-        # Verificar la RAM disponible
-        ram_disponible = psutil.virtual_memory().available / (1024 ** 2)  # Convertir a MB
-        if ram_disponible < 200:  # Ajustar según sea necesario
+        ram_disponible = psutil.virtual_memory().available / (1024 ** 2)
+        if ram_disponible < 200:
             print("Advertencia: RAM disponible baja, creando isla con menos detalles.")
             island_geometry = p3.CylinderGeometry(radiusTop=5, radiusBottom=5, height=2, radialSegments=8)
         else:
@@ -79,7 +62,7 @@ class IslaVirtual3D:
         water_geometry = p3.PlaneGeometry(width=20, height=20)
         water_material = p3.MeshBasicMaterial(color='blue', opacity=0.5, transparent=True)
         water = p3.Mesh(geometry=water_geometry, material=water_material)
-        water.position.y = -1  # Colocar el agua debajo de la isla
+        water.position.y = -1
         self.scene.add(water)
 
     def mostrar(self):
@@ -87,11 +70,10 @@ class IslaVirtual3D:
 
 # Ejemplo de uso
 if __name__ == '__main__':
-    # Ejemplo de compresión y descompresión
     files_to_compress = ['archivo1.txt', 'archivo2.txt']
     compress_files(files_to_compress, 'archivos_comprimidos.tar.gz')
     decompress_file('archivos_comprimidos.tar.gz')
     
-    # Mostrar la isla virtual 3D
     isla = IslaVirtual3D()
     isla.mostrar()
+    
