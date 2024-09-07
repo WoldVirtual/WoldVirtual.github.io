@@ -5,6 +5,9 @@ from database import conectar_base_datos
 from compresion import comprimir_y_guardar_datos, cargar_y_descomprimir_datos
 from servidor import app, socketio
 from almacenamiento import IslaVirtual3D
+from flask import render_template
+
+blockchain = Blockchain()
 
 def inicializar_recursos(cpu, ancho_banda):
     return RecursosUsuario(cpu, ancho_banda)
@@ -30,6 +33,14 @@ def iniciar_servidor():
 def mostrar_isla_virtual():
     isla = IslaVirtual3D()
     isla.mostrar()
+    ubicacion = "100 x 100"
+    data = blockchain.agregar_bloque_isla_virtual(ubicacion)
+    return data
+
+@app.route('/')
+def index():
+    data = mostrar_isla_virtual()
+    return render_template('index.html', data=data)
 
 def main():
     """
@@ -50,9 +61,8 @@ def main():
     blockchain = Blockchain()
     procesar_transaccion(blockchain, "transaccion_ejemplo")
 
-    mostrar_isla_virtual()
-
     iniciar_servidor()
 
 if __name__ == "__main__":
     main()
+    
