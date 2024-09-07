@@ -38,12 +38,6 @@ class Blockchain:
             print(f"Error al agregar el bloque: {e}")
 
     def confirmar_conexion_modulos(self, modulos):
-        """
-        Confirma la conexión de los módulos y agrega un bloque con la información.
-        
-        Args:
-            modulos (list): Lista de nombres de los módulos a confirmar.
-        """
         try:
             data = f"Conexión de módulos: {', '.join(modulos)}"
             self.agregar_bloque(data)
@@ -91,12 +85,6 @@ class Blockchain:
             print(f"Error al imprimir la cadena: {e}")
 
     def agregar_bloque_isla_virtual(self, ubicacion):
-        """
-        Agrega un bloque con la información de la isla virtual 3D y su ubicación.
-        
-        Args:
-            ubicacion (str): Ubicación de la isla virtual 3D.
-        """
         try:
             data = f"Isla Virtual 3D creada en la ubicación {ubicacion}"
             self.agregar_bloque(data)
@@ -113,4 +101,3 @@ if __name__ == "__main__":
         blockchain.imprimir_cadena()
     except Exception as e:
         print(f"Error en el uso del ejemplo: {e}")
-        
