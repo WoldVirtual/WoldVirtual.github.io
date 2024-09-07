@@ -1,16 +1,16 @@
 from usuarios import registrar_usuario
-from recursos import RecursosUsuario
-from blockchain import Blockchain
-from database import conectar_base_datos, registrar_isla_virtual
+from recursos import RecursosUsuario, MonitoreoRecursos
+from database import conectar_base_datos, registrar_isla_virtual, cerrar_conexion
 from compresion import comprimir_y_guardar_datos, cargar_y_descomprimir_datos
 from servidor import app, socketio
+from blockchain import Blockchain
 from almacenamiento import IslaVirtual3D
 from flask import render_template
 
 blockchain = Blockchain()
 
-def inicializar_recursos(cpu, ancho_banda):
-    return RecursosUsuario(cpu, ancho_banda)
+def inicializar_recursos():
+    return RecursosUsuario(50, 50)  # Ejemplo de inicialización con 50% de CPU y ancho de banda
 
 def conectar_bd():
     return conectar_base_datos()
@@ -52,7 +52,7 @@ def main():
     registrar un usuario, comprimir y almacenar datos, procesar transacciones
     en la blockchain, mostrar la isla virtual 3D e iniciar el servidor.
     """
-    recursos_usuario = inicializar_recursos(50, 50)
+    recursos_usuario = inicializar_recursos()
     db = conectar_bd()
     crear_usuario("nombre", "contraseña")
 
