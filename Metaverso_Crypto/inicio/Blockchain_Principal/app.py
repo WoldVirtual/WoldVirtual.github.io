@@ -1,4 +1,4 @@
-from usuarios import registrar_usuario
+from usuarios import registrar_usuario, verificar_credenciales, manejar_accion
 from recursos import RecursosUsuario, MonitoreoRecursos
 from database import conectar_base_datos, registrar_isla_virtual, cerrar_conexion
 from compresion import comprimir_y_guardar_datos, cargar_y_descomprimir_datos
