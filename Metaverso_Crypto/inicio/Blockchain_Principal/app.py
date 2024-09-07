@@ -4,6 +4,7 @@ from blockchain import Blockchain
 from database import conectar_base_datos
 from compresion import comprimir_y_guardar_datos, cargar_y_descomprimir_datos
 from servidor import app, socketio
+from almacenamiento import IslaVirtual3D
 
 def inicializar_recursos(cpu, ancho_banda):
     return RecursosUsuario(cpu, ancho_banda)
@@ -26,11 +27,15 @@ def procesar_transaccion(blockchain, transaccion):
 def iniciar_servidor():
     socketio.run(app, debug=True)
 
+def mostrar_isla_virtual():
+    isla = IslaVirtual3D()
+    isla.mostrar()
+
 def main():
     """
     Función principal para inicializar recursos, conectar a la base de datos,
     registrar un usuario, comprimir y almacenar datos, procesar transacciones
-    en la blockchain e iniciar el servidor.
+    en la blockchain, mostrar la isla virtual 3D e iniciar el servidor.
     """
     recursos_usuario = inicializar_recursos(50, 50)
     db = conectar_bd()
@@ -45,8 +50,9 @@ def main():
     blockchain = Blockchain()
     procesar_transaccion(blockchain, "transaccion_ejemplo")
 
+    mostrar_isla_virtual()
+
     iniciar_servidor()
 
 if __name__ == "__main__":
     main()
-    
