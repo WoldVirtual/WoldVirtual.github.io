@@ -1,5 +1,6 @@
 import pythreejs as p3
 from IPython.display import display
+import psutil  # Para verificar la RAM disponible
 
 class IslaVirtual3D:
     def __init__(self):
@@ -12,7 +13,13 @@ class IslaVirtual3D:
         self.crear_agua()
 
     def crear_isla(self):
-        island_geometry = p3.CylinderGeometry(radiusTop=5, radiusBottom=5, height=2)
+        ram_disponible = psutil.virtual_memory().available / (1024 ** 2)  # Convertir a MB
+        if ram_disponible < 200:
+            print("Advertencia: RAM disponible baja, creando isla con menos detalles.")
+            island_geometry = p3.CylinderGeometry(radiusTop=5, radiusBottom=5, height=2, radialSegments=8)
+        else:
+            island_geometry = p3.CylinderGeometry(radiusTop=5, radiusBottom=5, height=2)
+        
         island_material = p3.MeshBasicMaterial(color='green')
         island = p3.Mesh(geometry=island_geometry, material=island_material)
         self.scene.add(island)
