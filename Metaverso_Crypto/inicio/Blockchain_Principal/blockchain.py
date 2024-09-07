@@ -61,9 +61,19 @@ class Blockchain:
         for block in self.chain:
             print(block)
 
+    def agregar_bloque_isla_virtual(self, ubicacion):
+        """
+        Agrega un bloque con la información de la isla virtual 3D y su ubicación.
+        
+        Args:
+            ubicacion (str): Ubicación de la isla virtual 3D.
+        """
+        data = f"Isla Virtual 3D creada en la ubicación {ubicacion}"
+        self.agregar_bloque(data)
+        return data
+
 # Ejemplo de uso
 if __name__ == "__main__":
     blockchain = Blockchain()
     blockchain.confirmar_conexion_modulos(['usuarios', 'recursos', 'database', 'compresion', 'servidor'])
     blockchain.imprimir_cadena()
-    
