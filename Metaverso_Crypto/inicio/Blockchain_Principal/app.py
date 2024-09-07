@@ -1,7 +1,7 @@
 from usuarios import registrar_usuario
 from recursos import RecursosUsuario
 from blockchain import Blockchain
-from database import conectar_base_datos
+from database import conectar_base_datos, registrar_isla_virtual
 from compresion import comprimir_y_guardar_datos, cargar_y_descomprimir_datos
 from servidor import app, socketio
 from almacenamiento import IslaVirtual3D
@@ -39,6 +39,10 @@ def mostrar_isla_virtual():
 
 @app.route('/')
 def index():
+    conexion = conectar_bd()
+    if conexion:
+        registrar_isla_virtual(conexion, "100 x 100")
+        cerrar_conexion(conexion)
     data = mostrar_isla_virtual()
     return render_template('index.html', data=data)
 
