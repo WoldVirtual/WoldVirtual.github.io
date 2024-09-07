@@ -1,9 +1,12 @@
-from flask import Flask, render_template_string
+from flask import Flask, render_template_string, redirect, url_for
 from flask_socketio import SocketIO
+from blockchain import Blockchain
+from almacenamiento import IslaVirtual3D
 
 # Inicializar la aplicación Flask y SocketIO
 app = Flask(__name__)
 socketio = SocketIO(app)
+blockchain = Blockchain()
 
 # Plantilla HTML para la interfaz web
 html_template = """
@@ -29,13 +32,14 @@ html_template = """
 <body>
     <div class="header"><h1>Metaverso Crypto 3D</h1></div>
     <div class="nav">
-        <a href="#home">Inicio</a>
-        <a href="#usuarios">Usuarios</a>
-        <a href="#recursos">Recursos</a>
-        <a href="#blockchain">Blockchain</a>
-        <a href="#database">Base de Datos</a>
-        <a href="#compresion">Compresión</a>
-        <a href="#servidor">Servidor</a>
+        <a href="{{ url_for('index') }}">Inicio</a>
+        <a href="{{ url_for('usuarios') }}">Usuarios</a>
+        <a href="{{ url_for('recursos') }}">Recursos</a>
+        <a href="{{ url_for('blockchain') }}">Blockchain</a>
+        <a href="{{ url_for('database') }}">Base de Datos</a>
+        <a href="{{ url_for('compresion') }}">Compresión</a>
+        <a href="{{ url_for('servidor') }}">Servidor</a>
+        <a href="{{ url_for('isla_virtual') }}">Isla Virtual "World Central 3D"</a>
     </div>
     <div class="container">
         <div id="home" class="section">
@@ -67,6 +71,16 @@ def index():
     """
     return render_template_string(html_template)
 
+@app.route('/isla_virtual')
+def isla_virtual():
+    """
+    Renderiza la isla virtual 3D y agrega una transacción a la blockchain.
+    """
+    isla = IslaVirtual3D()
+    isla.mostrar()
+    blockchain.agregar_bloque("Isla Virtual 3D cargada en la ubicación 100 x 100")
+    return redirect(url_for('index'))
+
 # @socketio.on('audio_stream')
 # def handle_audio(data):
 #     """
@@ -76,4 +90,3 @@ def index():
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
-    

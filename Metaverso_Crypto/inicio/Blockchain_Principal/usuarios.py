@@ -1,7 +1,9 @@
 import hashlib
+from blockchain import Blockchain
 
 # Diccionario para almacenar usuarios y contraseñas
 usuarios = {}
+blockchain = Blockchain()
 
 def registrar_usuario(username, password):
     """
@@ -19,6 +21,7 @@ def registrar_usuario(username, password):
     hashed_password = hashlib.sha256(password.encode()).hexdigest()
     usuarios[username] = hashed_password
     print(f"Usuario {username} registrado con éxito.")
+    blockchain.agregar_bloque(f"Usuario {username} registrado")
 
 def verificar_credenciales(username, password):
     """
@@ -47,9 +50,13 @@ def manejar_accion(usuario, accion):
     """
     acciones = {
         "explorar": f"Bienvenido/a {usuario} al entorno de exploración.",
-        "intercambiar": f"Realizando intercambio para {usuario}."
+        "intercambiar": f"Realizando intercambio para {usuario}.",
+        "isla_virtual": f"Usuario {usuario} está cargando la isla virtual 3D."
     }
-    print(acciones.get(accion, "Acción no reconocida."))
+    accion_mensaje = acciones.get(accion, "Acción no reconocida.")
+    print(accion_mensaje)
+    if accion == "isla_virtual":
+        blockchain.agregar_bloque(f"Usuario {usuario} cargó la isla virtual 3D en la ubicación 100 x 100")
 
 # Ejemplo de uso
 if __name__ == "__main__":
@@ -57,8 +64,8 @@ if __name__ == "__main__":
         registrar_usuario("nombre", "contraseña")
         if verificar_credenciales("nombre", "contraseña"):
             manejar_accion("nombre", "explorar")
+            manejar_accion("nombre", "isla_virtual")
         else:
             print("Credenciales incorrectas.")
     except ValueError as e:
         print(e)
-    

@@ -1,12 +1,16 @@
-from usuarios import registrar_usuario
-from recursos import RecursosUsuario
-from blockchain import Blockchain
-from database import conectar_base_datos
+from usuarios import registrar_usuario, verificar_credenciales, manejar_accion
+from recursos import RecursosUsuario, MonitoreoRecursos
+from database import conectar_base_datos, registrar_isla_virtual, cerrar_conexion
 from compresion import comprimir_y_guardar_datos, cargar_y_descomprimir_datos
 from servidor import app, socketio
+from blockchain import Blockchain
+from almacenamiento import IslaVirtual3D
+from flask import render_template
 
-def inicializar_recursos(cpu, ancho_banda):
-    return RecursosUsuario(cpu, ancho_banda)
+blockchain = Blockchain()
+
+def inicializar_recursos():
+    return RecursosUsuario(50, 50)  # Ejemplo de inicialización con 50% de CPU y ancho de banda
 
 def conectar_bd():
     return conectar_base_datos()
@@ -26,13 +30,29 @@ def procesar_transaccion(blockchain, transaccion):
 def iniciar_servidor():
     socketio.run(app, debug=True)
 
+def mostrar_isla_virtual():
+    isla = IslaVirtual3D()
+    isla.mostrar()
+    ubicacion = "100 x 100"
+    data = blockchain.agregar_bloque_isla_virtual(ubicacion)
+    return data
+
+@app.route('/')
+def index():
+    conexion = conectar_bd()
+    if conexion:
+        registrar_isla_virtual(conexion, "100 x 100")
+        cerrar_conexion(conexion)
+    data = mostrar_isla_virtual()
+    return render_template('index.html', data=data)
+
 def main():
     """
     Función principal para inicializar recursos, conectar a la base de datos,
     registrar un usuario, comprimir y almacenar datos, procesar transacciones
-    en la blockchain e iniciar el servidor.
+    en la blockchain, mostrar la isla virtual 3D e iniciar el servidor.
     """
-    recursos_usuario = inicializar_recursos(50, 50)
+    recursos_usuario = inicializar_recursos()
     db = conectar_bd()
     crear_usuario("nombre", "contraseña")
 
@@ -49,4 +69,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
