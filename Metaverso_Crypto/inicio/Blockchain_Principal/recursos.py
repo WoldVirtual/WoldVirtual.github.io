@@ -13,10 +13,18 @@ class RecursosUsuario:
         Returns:
             dict: Recursos asignados al usuario.
         """
-        return {
-            'cpu': recursos_comunitarios['cpu'] * (self.porcentaje_cpu / 100),
-            'ancho_banda': recursos_comunitarios['ancho_banda'] * (self.porcentaje_ancho_banda / 100),
-        }
+        try:
+            recursos_asignados = {
+                'cpu': recursos_comunitarios['cpu'] * (self.porcentaje_cpu / 100),
+                'ancho_banda': recursos_comunitarios['ancho_banda'] * (self.porcentaje_ancho_banda / 100),
+            }
+            return recursos_asignados
+        except KeyError as e:
+            print(f"Error al asignar recursos: clave no encontrada {e}")
+            return {}
+        except Exception as e:
+            print(f"Error al asignar recursos: {e}")
+            return {}
 
 class MonitoreoRecursos:
     def __init__(self):
@@ -31,10 +39,13 @@ class MonitoreoRecursos:
             uso_cpu (float): Porcentaje de uso de CPU.
             uso_ancho_banda (float): Porcentaje de uso de ancho de banda.
         """
-        self.recursos_usuarios[nombre_usuario] = {
-            'uso_cpu': uso_cpu,
-            'uso_ancho_banda': uso_ancho_banda
-        }
+        try:
+            self.recursos_usuarios[nombre_usuario] = {
+                'uso_cpu': uso_cpu,
+                'uso_ancho_banda': uso_ancho_banda
+            }
+        except Exception as e:
+            print(f"Error al actualizar recursos: {e}")
 
     def obtener_informacion(self):
         """
@@ -43,14 +54,21 @@ class MonitoreoRecursos:
         Returns:
             dict: Información de uso de recursos.
         """
-        return self.recursos_usuarios
+        try:
+            return self.recursos_usuarios
+        except Exception as e:
+            print(f"Error al obtener información de recursos: {e}")
+            return {}
 
     @staticmethod
     def inicializar():
         """
         Inicializa los recursos.
         """
-        print("Recursos inicializados")
+        try:
+            print("Recursos inicializados")
+        except Exception as e:
+            print(f"Error al inicializar recursos: {e}")
 
     def asignar_recursos_isla_virtual(self, nombre_usuario, recursos_comunitarios):
         """
@@ -63,12 +81,19 @@ class MonitoreoRecursos:
         Returns:
             dict: Recursos asignados al usuario para la isla virtual 3D.
         """
-        recursos_asignados = {
-            'cpu': recursos_comunitarios['cpu'] * (self.recursos_usuarios[nombre_usuario]['uso_cpu'] / 100),
-            'ancho_banda': recursos_comunitarios['ancho_banda'] * (self.recursos_usuarios[nombre_usuario]['uso_ancho_banda'] / 100),
-        }
-        print(f"Recursos asignados para la isla virtual 3D a {nombre_usuario}: {recursos_asignados}")
-        return recursos_asignados
+        try:
+            recursos_asignados = {
+                'cpu': recursos_comunitarios['cpu'] * (self.recursos_usuarios[nombre_usuario]['uso_cpu'] / 100),
+                'ancho_banda': recursos_comunitarios['ancho_banda'] * (self.recursos_usuarios[nombre_usuario]['uso_ancho_banda'] / 100),
+            }
+            print(f"Recursos asignados para la isla virtual 3D a {nombre_usuario}: {recursos_asignados}")
+            return recursos_asignados
+        except KeyError as e:
+            print(f"Error al asignar recursos para la isla virtual: clave no encontrada {e}")
+            return {}
+        except Exception as e:
+            print(f"Error al asignar recursos para la isla virtual: {e}")
+            return {}
 
 # Ejemplo de uso
 if __name__ == "__main__":
@@ -85,4 +110,3 @@ if __name__ == "__main__":
     # Asignar recursos específicos para la isla virtual 3D
     recursos_isla_virtual = monitoreo.asignar_recursos_isla_virtual("usuario1", recursos_comunitarios)
     print(f"Recursos asignados para la isla virtual 3D: {recursos_isla_virtual}")
-    
