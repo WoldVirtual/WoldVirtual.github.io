@@ -16,12 +16,17 @@ def registrar_usuario(username, password):
     Raises:
         ValueError: Si el usuario ya existe.
     """
-    if username in usuarios:
-        raise ValueError("El usuario ya existe.")
-    hashed_password = hashlib.sha256(password.encode()).hexdigest()
-    usuarios[username] = hashed_password
-    print(f"Usuario {username} registrado con éxito.")
-    blockchain.agregar_bloque(f"Usuario {username} registrado")
+    try:
+        if username in usuarios:
+            raise ValueError("El usuario ya existe.")
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
+        usuarios[username] = hashed_password
+        print(f"Usuario {username} registrado con éxito.")
+        blockchain.agregar_bloque(f"Usuario {username} registrado")
+    except ValueError as e:
+        print(f"Error al registrar usuario: {e}")
+    except Exception as e:
+        print(f"Error inesperado al registrar usuario: {e}")
 
 def verificar_credenciales(username, password):
     """
@@ -34,8 +39,12 @@ def verificar_credenciales(username, password):
     Returns:
         bool: True si las credenciales son correctas, False en caso contrario.
     """
-    hashed_password = hashlib.sha256(password.encode()).hexdigest()
-    return usuarios.get(username) == hashed_password
+    try:
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
+        return usuarios.get(username) == hashed_password
+    except Exception as e:
+        print(f"Error al verificar credenciales: {e}")
+        return False
 
 def manejar_accion(usuario, accion):
     """
@@ -48,15 +57,22 @@ def manejar_accion(usuario, accion):
     Raises:
         ValueError: Si la acción no es reconocida.
     """
-    acciones = {
-        "explorar": f"Bienvenido/a {usuario} al entorno de exploración.",
-        "intercambiar": f"Realizando intercambio para {usuario}.",
-        "isla_virtual": f"Usuario {usuario} está cargando la isla virtual 3D."
-    }
-    accion_mensaje = acciones.get(accion, "Acción no reconocida.")
-    print(accion_mensaje)
-    if accion == "isla_virtual":
-        blockchain.agregar_bloque(f"Usuario {usuario} cargó la isla virtual 3D en la ubicación 100 x 100")
+    try:
+        acciones = {
+            "explorar": f"Bienvenido/a {usuario} al entorno de exploración.",
+            "intercambiar": f"Realizando intercambio para {usuario}.",
+            "isla_virtual": f"Usuario {usuario} está cargando la isla virtual 3D."
+        }
+        accion_mensaje = acciones.get(accion, "Acción no reconocida.")
+        print(accion_mensaje)
+        if accion == "isla_virtual":
+            blockchain.agregar_bloque(f"Usuario {usuario} cargó la isla virtual 3D en la ubicación 100 x 100")
+        if accion_mensaje == "Acción no reconocida.":
+            raise ValueError(accion_mensaje)
+    except ValueError as e:
+        print(f"Error al manejar acción: {e}")
+    except Exception as e:
+        print(f"Error inesperado al manejar acción: {e}")
 
 # Ejemplo de uso
 if __name__ == "__main__":
@@ -69,3 +85,6 @@ if __name__ == "__main__":
             print("Credenciales incorrectas.")
     except ValueError as e:
         print(e)
+    except Exception as e:
+        print(f"Error inesperado: {e}")
+                                                 
