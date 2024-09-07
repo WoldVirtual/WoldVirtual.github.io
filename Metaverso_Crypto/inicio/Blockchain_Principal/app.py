@@ -11,7 +11,7 @@ blockchain = Blockchain()
 
 def inicializar_recursos():
     try:
-        return RecursosUsuario(50, 50)  # Ejemplo de inicialización con 50% de CPU y ancho de banda
+        return RecursosUsuario(50, 50)
     except Exception as e:
         print(f"Error al inicializar recursos: {e}")
         return None
@@ -79,11 +79,6 @@ def index():
     return render_template('index.html', data=data)
 
 def main():
-    """
-    Función principal para inicializar recursos, conectar a la base de datos,
-    registrar un usuario, comprimir y almacenar datos, procesar transacciones
-    en la blockchain, mostrar la isla virtual 3D e iniciar el servidor.
-    """
     recursos_usuario = inicializar_recursos()
     if recursos_usuario is None:
         print("Error crítico: No se pudieron inicializar los recursos.")
