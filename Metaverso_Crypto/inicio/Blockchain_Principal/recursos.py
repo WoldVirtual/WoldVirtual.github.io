@@ -52,6 +52,24 @@ class MonitoreoRecursos:
         """
         print("Recursos inicializados")
 
+    def asignar_recursos_isla_virtual(self, nombre_usuario, recursos_comunitarios):
+        """
+        Asigna recursos específicos para la isla virtual 3D a un usuario.
+
+        Args:
+            nombre_usuario (str): Nombre del usuario.
+            recursos_comunitarios (dict): Recursos disponibles en la comunidad.
+
+        Returns:
+            dict: Recursos asignados al usuario para la isla virtual 3D.
+        """
+        recursos_asignados = {
+            'cpu': recursos_comunitarios['cpu'] * (self.recursos_usuarios[nombre_usuario]['uso_cpu'] / 100),
+            'ancho_banda': recursos_comunitarios['ancho_banda'] * (self.recursos_usuarios[nombre_usuario]['uso_ancho_banda'] / 100),
+        }
+        print(f"Recursos asignados para la isla virtual 3D a {nombre_usuario}: {recursos_asignados}")
+        return recursos_asignados
+
 # Ejemplo de uso
 if __name__ == "__main__":
     recursos_comunitarios = {'cpu': 100, 'ancho_banda': 1000}
@@ -63,4 +81,8 @@ if __name__ == "__main__":
     monitoreo.actualizar_recursos("usuario1", 30, 200)
     print(f"Información de recursos: {monitoreo.obtener_informacion()}")
     MonitoreoRecursos.inicializar()
+
+    # Asignar recursos específicos para la isla virtual 3D
+    recursos_isla_virtual = monitoreo.asignar_recursos_isla_virtual("usuario1", recursos_comunitarios)
+    print(f"Recursos asignados para la isla virtual 3D: {recursos_isla_virtual}")
     
