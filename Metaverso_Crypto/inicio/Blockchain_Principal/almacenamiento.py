@@ -2,6 +2,7 @@ import os
 import tarfile
 import pythreejs as p3
 from IPython.display import display
+import psutil  # Para verificar la RAM disponible
 
 # Ruta donde se almacenan los archivos comprimidos y descomprimidos
 storage_path = '/workspaces/WoldVirtual.github.io/Metaverso_Crypto/inicio/Blockchain_Principal/Almacenamiento'
@@ -21,12 +22,14 @@ def compress_files(files, output_filename):
         if not os.path.isfile(file):
             print(f"Advertencia: El archivo {file} no existe y no será incluido en la compresión.")
     
-    with tarfile.open(output_filepath, 'w:gz') as tar:
-        for file in files:
-            if os.path.isfile(file):  # Solo añade los archivos existentes
-                tar.add(file, arcname=os.path.basename(file))
-    
-    print(f'Archivos comprimidos en {output_filename}, guardado en {output_filepath}')
+    try:
+        with tarfile.open(output_filepath, 'w:gz') as tar:
+            for file in files:
+                if os.path.isfile(file):  # Solo añade los archivos existentes
+                    tar.add(file, arcname=os.path.basename(file))
+        print(f'Archivos comprimidos en {output_filename}, guardado en {output_filepath}')
+    except Exception as e:
+        print(f"Error al comprimir archivos: {e}")
 
 def decompress_file(input_filename):
     """
@@ -42,10 +45,12 @@ def decompress_file(input_filename):
         print(f"Error: El archivo {input_filepath} no existe.")
         return
     
-    with tarfile.open(input_filepath, 'r:gz') as tar:
-        tar.extractall(path=storage_path)
-    
-    print(f'Archivos descomprimidos en {storage_path}')
+    try:
+        with tarfile.open(input_filepath, 'r:gz') as tar:
+            tar.extractall(path=storage_path)
+        print(f'Archivos descomprimidos en {storage_path}')
+    except Exception as e:
+        print(f"Error al descomprimir archivos: {e}")
 
 class IslaVirtual3D:
     def __init__(self):
@@ -58,7 +63,14 @@ class IslaVirtual3D:
         self.crear_agua()
 
     def crear_isla(self):
-        island_geometry = p3.CylinderGeometry(radiusTop=5, radiusBottom=5, height=2)
+        # Verificar la RAM disponible
+        ram_disponible = psutil.virtual_memory().available / (1024 ** 2)  # Convertir a MB
+        if ram_disponible < 200:  # Ajustar según sea necesario
+            print("Advertencia: RAM disponible baja, creando isla con menos detalles.")
+            island_geometry = p3.CylinderGeometry(radiusTop=5, radiusBottom=5, height=2, radialSegments=8)
+        else:
+            island_geometry = p3.CylinderGeometry(radiusTop=5, radiusBottom=5, height=2)
+        
         island_material = p3.MeshBasicMaterial(color='green')
         island = p3.Mesh(geometry=island_geometry, material=island_material)
         self.scene.add(island)
