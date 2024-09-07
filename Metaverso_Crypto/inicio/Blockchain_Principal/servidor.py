@@ -15,7 +15,7 @@ html_template = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Metaverso Crypto 3D</title>
+    <title>Wold Virtual</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f9f9f9; }
         .header { background-color: #4CAF50; color: white; padding: 15px 0; text-align: center; }
@@ -30,7 +30,7 @@ html_template = """
     </style>
 </head>
 <body>
-    <div class="header"><h1>Metaverso Crypto 3D</h1></div>
+    <div class="header"><h1>Wold Virtual</h1></div>
     <div class="nav">
         <a href="{{ url_for('index') }}">Inicio</a>
         <a href="{{ url_for('usuarios') }}">Usuarios</a>
@@ -43,7 +43,7 @@ html_template = """
     </div>
     <div class="container">
         <div id="home" class="section">
-            <h2>Metaverso Crypto 3D descentralizado</h2>
+            <h2>Isla Generar de Inicio</h2>
             <p>Próximamente en esta página principal, se darán más detalles sobre el proyecto...</p>
             <button class="button">Más Información</button>
         </div>
@@ -69,24 +69,39 @@ def index():
     """
     Renderiza la plantilla HTML para la página principal.
     """
-    return render_template_string(html_template)
+    try:
+        return render_template_string(html_template)
+    except Exception as e:
+        print(f"Error al renderizar la página principal: {e}")
+        return "Error al cargar la página principal."
 
 @app.route('/isla_virtual')
 def isla_virtual():
     """
     Renderiza la isla virtual 3D y agrega una transacción a la blockchain.
     """
-    isla = IslaVirtual3D()
-    isla.mostrar()
-    blockchain.agregar_bloque("Isla Virtual 3D cargada en la ubicación 100 x 100")
-    return redirect(url_for('index'))
+    try:
+        isla = IslaVirtual3D()
+        isla.mostrar()
+        blockchain.agregar_bloque("Isla Virtual 3D cargada en la ubicación 100 x 100")
+        return redirect(url_for('index'))
+    except Exception as e:
+        print(f"Error al cargar la isla virtual: {e}")
+        return "Error al cargar la isla virtual."
 
 # @socketio.on('audio_stream')
 # def handle_audio(data):
 #     """
 #     Maneja el evento de transmisión de audio.
 #     """
-#     socketio.emit('audio_stream', data)
+#     try:
+#         socketio.emit('audio_stream', data)
+#     except Exception as e:
+#         print(f"Error al manejar la transmisión de audio: {e}")
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    try:
+        socketio.run(app, debug=True)
+    except Exception as e:
+        print(f"Error al iniciar el servidor: {e}")
+        
