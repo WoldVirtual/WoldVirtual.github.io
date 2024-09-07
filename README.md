@@ -20,6 +20,13 @@ será un proyecto de código abierto.
 ```
 pip install flask flask_socketio psycopg2-binary web3
 
+y también
+pip install pythreejs
+pip install notebook
+
+inicializar
+jupyter notebook
+
    ```
 
 ### Requisitos previos

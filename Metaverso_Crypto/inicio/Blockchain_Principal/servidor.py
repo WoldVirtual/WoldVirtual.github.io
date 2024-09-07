@@ -1,9 +1,12 @@
-from flask import Flask, render_template_string
+from flask import Flask, render_template_string, redirect, url_for
 from flask_socketio import SocketIO
+from blockchain import Blockchain
+from almacenamiento import IslaVirtual3D
 
 # Inicializar la aplicación Flask y SocketIO
 app = Flask(__name__)
 socketio = SocketIO(app)
+blockchain = Blockchain()
 
 # Plantilla HTML para la interfaz web
 html_template = """
@@ -12,7 +15,7 @@ html_template = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Metaverso Crypto 3D</title>
+    <title>Wold Virtual</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f9f9f9; }
         .header { background-color: #4CAF50; color: white; padding: 15px 0; text-align: center; }
@@ -27,19 +30,20 @@ html_template = """
     </style>
 </head>
 <body>
-    <div class="header"><h1>Metaverso Crypto 3D</h1></div>
+    <div class="header"><h1>Wold Virtual</h1></div>
     <div class="nav">
-        <a href="#home">Inicio</a>
-        <a href="#usuarios">Usuarios</a>
-        <a href="#recursos">Recursos</a>
-        <a href="#blockchain">Blockchain</a>
-        <a href="#database">Base de Datos</a>
-        <a href="#compresion">Compresión</a>
-        <a href="#servidor">Servidor</a>
+        <a href="{{ url_for('index') }}">Inicio</a>
+        <a href="{{ url_for('usuarios') }}">Usuarios</a>
+        <a href="{{ url_for('recursos') }}">Recursos</a>
+        <a href="{{ url_for('blockchain') }}">Blockchain</a>
+        <a href="{{ url_for('database') }}">Base de Datos</a>
+        <a href="{{ url_for('compresion') }}">Compresión</a>
+        <a href="{{ url_for('servidor') }}">Servidor</a>
+        <a href="{{ url_for('isla_virtual') }}">Isla Virtual "World Central 3D"</a>
     </div>
     <div class="container">
         <div id="home" class="section">
-            <h2>Metaverso Crypto 3D descentralizado</h2>
+            <h2>Isla Generar de Inicio</h2>
             <p>Próximamente en esta página principal, se darán más detalles sobre el proyecto...</p>
             <button class="button">Más Información</button>
         </div>
@@ -65,15 +69,39 @@ def index():
     """
     Renderiza la plantilla HTML para la página principal.
     """
-    return render_template_string(html_template)
+    try:
+        return render_template_string(html_template)
+    except Exception as e:
+        print(f"Error al renderizar la página principal: {e}")
+        return "Error al cargar la página principal."
+
+@app.route('/isla_virtual')
+def isla_virtual():
+    """
+    Renderiza la isla virtual 3D y agrega una transacción a la blockchain.
+    """
+    try:
+        isla = IslaVirtual3D()
+        isla.mostrar()
+        blockchain.agregar_bloque("Isla Virtual 3D cargada en la ubicación 100 x 100")
+        return redirect(url_for('index'))
+    except Exception as e:
+        print(f"Error al cargar la isla virtual: {e}")
+        return "Error al cargar la isla virtual."
 
 # @socketio.on('audio_stream')
 # def handle_audio(data):
 #     """
 #     Maneja el evento de transmisión de audio.
 #     """
-#     socketio.emit('audio_stream', data)
+#     try:
+#         socketio.emit('audio_stream', data)
+#     except Exception as e:
+#         print(f"Error al manejar la transmisión de audio: {e}")
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
-    
+    try:
+        socketio.run(app, debug=True)
+    except Exception as e:
+        print(f"Error al iniciar el servidor: {e}")
+        

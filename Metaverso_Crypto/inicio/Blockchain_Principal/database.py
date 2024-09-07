@@ -1,5 +1,8 @@
 import psycopg2
 from psycopg2 import sql
+from blockchain import Blockchain
+
+blockchain = Blockchain()
 
 def conectar_base_datos():
     """
@@ -20,6 +23,7 @@ def conectar_base_datos():
         return conexion
     except psycopg2.DatabaseError as e:
         print(f"Error en la conexión a la base de datos: {e}")
+        blockchain.agregar_bloque(f"Error en la conexión a la base de datos: {e}")
         return None
 
 def obtener_usuarios(conexion):
@@ -39,6 +43,7 @@ def obtener_usuarios(conexion):
             return resultados
     except psycopg2.DatabaseError as e:
         print(f"Error al obtener usuarios: {e}")
+        blockchain.agregar_bloque(f"Error al obtener usuarios: {e}")
         return []
 
 def cerrar_conexion(conexion):
@@ -49,8 +54,35 @@ def cerrar_conexion(conexion):
         conexion: Objeto de conexión a la base de datos.
     """
     if conexion:
-        conexion.close()
-        print("Conexión cerrada.")
+        try:
+            conexion.close()
+            print("Conexión cerrada.")
+        except psycopg2.DatabaseError as e:
+            print(f"Error al cerrar la conexión: {e}")
+            blockchain.agregar_bloque(f"Error al cerrar la conexión: {e}")
+
+def registrar_isla_virtual(conexion, ubicacion):
+    """
+    Registra la información de la isla virtual 3D en la base de datos y agrega un bloque a la blockchain.
+
+    Args:
+        conexion: Objeto de conexión a la base de datos.
+        ubicacion (str): Ubicación de la isla virtual 3D.
+    """
+    try:
+        with conexion.cursor() as cursor:
+            cursor.execute(
+                sql.SQL("INSERT INTO {} (ubicacion) VALUES (%s)").format(sql.Identifier('islas_virtuales')),
+                [ubicacion]
+            )
+            conexion.commit()
+            print(f"Isla virtual 3D registrada en la ubicación {ubicacion}.")
+            
+            # Agregar un bloque a la blockchain
+            blockchain.agregar_bloque(f"Isla virtual 3D registrada en la ubicación {ubicacion}")
+    except psycopg2.DatabaseError as e:
+        print(f"Error al registrar la isla virtual 3D: {e}")
+        blockchain.agregar_bloque(f"Error al registrar la isla virtual 3D: {e}")
 
 # Ejemplo de uso
 if __name__ == "__main__":
@@ -59,4 +91,7 @@ if __name__ == "__main__":
         usuarios = obtener_usuarios(conexion)
         for usuario in usuarios:
             print(usuario)
+        
+        registrar_isla_virtual(conexion, "100 x 100")
+        
         cerrar_conexion(conexion)
